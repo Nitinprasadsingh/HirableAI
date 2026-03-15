@@ -1,4 +1,4 @@
-# Resume Parser by Opus
+# HirableAI
 
 FastAPI-based resume parsing MVP for PDF/DOCX resumes with:
 - text extraction
