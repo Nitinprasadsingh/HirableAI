@@ -1,7 +1,7 @@
-<<<<<<< HEAD
+
 # HirableAI
 =======
->>>>>>> fa983dfa302499eda03da856fb9b38f51bbcb12a
+
 FastAPI-based resume parsing MVP for PDF/DOCX resumes with:
 - text extraction
 - section detection
