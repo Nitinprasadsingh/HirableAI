@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Candidate Dashboard | AI Interview Trainer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/styles.css" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js" defer></script>
+  </head>
+  <body>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="./index.html">AI Interview Trainer</a>
+        <nav class="nav-links">
+          <a href="./upload.html">Upload</a>
+          <a href="./interview.html">Interview</a>
+          <a class="active" href="./dashboard.html">Dashboard</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container page-enter">
+      <section class="panel stagger">
+        <p class="eyebrow">Step 3</p>
+        <h1>Interview Results Dashboard</h1>
+        <p class="subtext">Review readiness, question-level performance, weak areas, and next study actions across sessions.</p>
+      </section>
+
+      <section class="panel card stagger form-stack">
+        <label>
+          Resume ID
+          <input id="dashboardResumeId" type="text" placeholder="Paste resume_id or use URL query" />
+        </label>
+        <button id="loadDashboardBtn" class="btn btn-primary" type="button">Load Dashboard</button>
+        <p id="dashboardStatus" class="status-pill status-info">Waiting for resume data...</p>
+      </section>
+
+      <section class="grid-3">
+        <article class="panel card stagger metric-card">
+          <p class="metric-label">Readiness Score</p>
+          <p id="readinessScore" class="metric-value">-</p>
+          <p id="readinessBand" class="metric-note">Band: -</p>
+        </article>
+
+        <article class="panel card stagger metric-card">
+          <p class="metric-label">Latest Session</p>
+          <p id="latestSessionScore" class="metric-value">-</p>
+          <p id="latestSessionMeta" class="metric-note">No session loaded</p>
+        </article>
+
+        <article class="panel card stagger metric-card">
+          <p class="metric-label">Coverage</p>
+          <p id="coverageScore" class="metric-value">-</p>
+          <p id="coverageMeta" class="metric-note">Categories covered</p>
+        </article>
+      </section>
+
+      <section class="grid-2">
+        <article class="panel card stagger">
+          <h2>Session Summary</h2>
+          <div id="sessionSummaryList" class="list-block"></div>
+        </article>
+
+        <article class="panel card stagger">
+          <h2>Profile Snapshot</h2>
+          <div id="profileSummary" class="list-block"></div>
+        </article>
+      </section>
+
+      <section class="grid-2">
+        <article class="panel card stagger">
+          <h2>Skill Radar</h2>
+          <div class="chart-wrap">
+            <canvas id="skillRadarChart" height="260"></canvas>
+          </div>
+        </article>
+
+        <article class="panel card stagger">
+          <h2>Readiness Trend</h2>
+          <div class="chart-wrap">
+            <canvas id="trendChart" height="260"></canvas>
+          </div>
+        </article>
+      </section>
+
+      <section class="grid-2">
+        <article class="panel card stagger">
+          <h2>Weak Areas</h2>
+          <ul id="weakAreasList" class="event-list"></ul>
+        </article>
+
+        <article class="panel card stagger">
+          <h2>Recommended Study Plan</h2>
+          <ul id="studyPlanList" class="event-list"></ul>
+        </article>
+      </section>
+
+      <section class="panel card stagger">
+        <h2>Question-by-Question Breakdown</h2>
+        <div class="table-wrap">
+          <table class="breakdown-table">
+            <thead>
+              <tr>
+                <th>Question</th>
+                <th>Topic</th>
+                <th>Score</th>
+                <th>Verdict</th>
+                <th>Missed Points</th>
+              </tr>
+            </thead>
+            <tbody id="questionBreakdownBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel card stagger">
+        <h2>Actionable Feedback Templates</h2>
+        <ul id="feedbackTemplatesList" class="event-list"></ul>
+      </section>
+
+      <section class="panel card stagger">
+        <h2>Scoring Interpretation Bands</h2>
+        <div id="scoringBands" class="list-block"></div>
+      </section>
+
+      <section class="panel card stagger">
+        <h2>Dashboard API Contract</h2>
+        <pre id="apiContractPreview" class="code-preview"></pre>
+      </section>
+    </main>
+
+    <script type="module" src="./js/dashboard.js"></script>
+  </body>
+</html>

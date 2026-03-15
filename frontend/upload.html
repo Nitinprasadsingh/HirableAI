@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Upload Resume | AI Interview Trainer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="./index.html">AI Interview Trainer</a>
+        <nav class="nav-links">
+          <a class="active" href="./upload.html">Upload</a>
+          <a href="./interview.html">Interview</a>
+          <a href="./dashboard.html">Dashboard</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container page-enter">
+      <section class="panel stagger">
+        <p class="eyebrow">Step 1</p>
+        <h1>Upload resume and parse profile</h1>
+        <p class="subtext">Use this page to upload a PDF or DOCX, start parse, and wait for structured extraction to complete.</p>
+      </section>
+
+      <section class="grid-2">
+        <article class="panel card stagger">
+          <h2>Resume Upload</h2>
+          <form id="uploadForm" class="form-stack" novalidate>
+            <label>
+              Candidate ID
+              <input id="candidateId" name="candidateId" type="text" placeholder="candidate-001" required />
+            </label>
+
+            <label>
+              Consent Version
+              <input id="consentVersion" name="consentVersion" type="text" value="v1" required />
+            </label>
+
+            <label>
+              Resume File (PDF or DOCX)
+              <input id="resumeFile" name="resumeFile" type="file" accept=".pdf,.docx" required />
+            </label>
+
+            <label class="inline-row">
+              <input id="forceReparse" name="forceReparse" type="checkbox" />
+              Force re-parse even if already parsed
+            </label>
+
+            <button id="submitUpload" class="btn btn-primary" type="submit">Upload and Parse</button>
+          </form>
+        </article>
+
+        <article class="panel card stagger">
+          <h2>Status</h2>
+          <p id="statusMessage" class="status-pill status-info">Waiting for upload...</p>
+          <div class="progress-wrap">
+            <div id="progressBar" class="progress-bar" style="width: 0%"></div>
+          </div>
+          <ul id="statusList" class="event-list"></ul>
+        </article>
+      </section>
+    </main>
+
+    <script type="module" src="./js/upload.js"></script>
+  </body>
+</html>

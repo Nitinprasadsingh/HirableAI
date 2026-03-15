@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interview Round | AI Interview Trainer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="./index.html">AI Interview Trainer</a>
+        <nav class="nav-links">
+          <a href="./upload.html">Upload</a>
+          <a class="active" href="./interview.html">Interview</a>
+          <a href="./dashboard.html">Dashboard</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container page-enter">
+      <section class="panel stagger">
+        <p class="eyebrow">Step 2</p>
+        <h1>Run adaptive technical interview</h1>
+        <p class="subtext">Questions can be generated from the parsed resume. This scaffold includes fallback local logic until interview APIs are added.</p>
+      </section>
+
+      <section class="panel card stagger form-stack">
+        <label>
+          Resume ID
+          <input id="resumeIdInput" type="text" placeholder="Paste resume_id" />
+        </label>
+        <button id="startInterviewBtn" class="btn btn-primary" type="button">Start Interview</button>
+        <p id="interviewStatus" class="status-pill status-info">Interview not started.</p>
+      </section>
+
+      <section id="interviewPanel" class="panel card hidden">
+        <div class="inline-row space-between">
+          <h2 id="questionCounter">Question 1</h2>
+          <span id="roundProgress" class="status-pill status-neutral">0%</span>
+        </div>
+        <p id="questionText" class="question-text"></p>
+
+        <label>
+          Your Answer
+          <textarea id="answerInput" rows="8" placeholder="Explain your approach and include tradeoffs."></textarea>
+        </label>
+
+        <div class="actions">
+          <button id="submitAnswerBtn" class="btn btn-primary" type="button">Submit Answer</button>
+          <button id="skipQuestionBtn" class="btn btn-secondary" type="button">Skip</button>
+        </div>
+
+        <div id="feedbackBox" class="feedback-box"></div>
+      </section>
+    </main>
+
+    <script type="module" src="./js/interview.js"></script>
+  </body>
+</html>

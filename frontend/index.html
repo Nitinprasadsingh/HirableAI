@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Interview Trainer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./css/styles.css" />
+  </head>
+  <body>
+    <div class="orb orb-a"></div>
+    <div class="orb orb-b"></div>
+
+    <header class="topbar">
+      <div class="container topbar-inner">
+        <a class="brand" href="./index.html">AI Interview Trainer</a>
+        <nav class="nav-links">
+          <a href="./upload.html">Upload</a>
+          <a href="./interview.html">Interview</a>
+          <a href="./dashboard.html">Dashboard</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container page-enter">
+      <section class="hero panel stagger">
+        <p class="eyebrow">Resume to Readiness</p>
+        <h1>Train for technical interviews with your own experience.</h1>
+        <p class="subtext">
+          Upload your resume, extract skills and projects, run adaptive interview rounds, and track weak areas with practical recommendations.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="./upload.html">Start With Resume</a>
+          <a class="btn btn-secondary" href="./dashboard.html">View Dashboard</a>
+        </div>
+      </section>
+
+      <section class="grid-3 stagger">
+        <article class="panel card">
+          <h2>1. Parse Resume</h2>
+          <p>Upload PDF or DOCX and convert unstructured content into skills, projects, education, and experience records.</p>
+        </article>
+        <article class="panel card">
+          <h2>2. Adaptive Interview</h2>
+          <p>Generate personalized technical questions based on extracted profile strengths and gaps.</p>
+        </article>
+        <article class="panel card">
+          <h2>3. Improvement Loop</h2>
+          <p>Evaluate answers with a rubric, surface weak areas, and measure progress over repeated sessions.</p>
+        </article>
+      </section>
+
+      <section class="panel stagger">
+        <h2>Execution Flow</h2>
+        <ol class="timeline">
+          <li>Upload resume file and create resume record.</li>
+          <li>Start background parsing and poll parse job status.</li>
+          <li>Review structured profile and confidence signals.</li>
+          <li>Run interview round and capture answer quality.</li>
+          <li>Track score trends and recommendations in dashboard.</li>
+        </ol>
+      </section>
+    </main>
+  </body>
+</html>
