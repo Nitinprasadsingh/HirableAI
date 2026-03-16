@@ -352,7 +352,7 @@ function buildFallbackDashboard(resumeId, parsed, report) {
   return {
     resume_id: resumeId,
     candidate_name: parsed?.profile?.candidate_name || "Candidate",
-    target_role: "Backend Engineer",
+    target_role: inferTargetRoleFromParsed(parsed),
     readiness_score_100: readiness || Math.round((parsed?.quality?.overall_confidence || 0) * 100),
     readiness_band: readiness >= 78 ? "ready" : readiness >= 55 ? "intermediate" : "beginner",
     scoring_bands: [
@@ -417,4 +417,18 @@ function buildFallbackDashboard(resumeId, parsed, report) {
       "Close with what you would improve in the next iteration.",
     ],
   };
+}
+
+function inferTargetRoleFromParsed(parsed) {
+  const profile = parsed?.profile || {};
+  const headline = String(profile.headline || "").trim();
+  if (headline && headline.length <= 80) return headline;
+
+  const firstExperienceTitle = String(profile.experience?.[0]?.title || "").trim();
+  if (firstExperienceTitle) return firstExperienceTitle;
+
+  const firstProjectRole = String(profile.projects?.[0]?.role || "").trim();
+  if (firstProjectRole) return firstProjectRole;
+
+  return "Software Engineer";
 }

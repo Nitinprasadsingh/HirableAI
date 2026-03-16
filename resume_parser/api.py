@@ -176,7 +176,24 @@ def confirm_resume(resume_id: UUID, payload: ConfirmRequest) -> ConfirmResponse:
 
 @router.post("/interviews/questions", response_model=QuestionGenerationResponse)
 def generate_interview_questions(payload: QuestionGenerationRequest) -> QuestionGenerationResponse:
-    return question_engine.generate(payload)
+    request_payload = payload.model_dump(mode="python")
+    profile = payload.candidate_profile or payload.parsed_profile
+
+    if profile is None and payload.resume_id is not None:
+        parsed = repository.get_parsed_resume(payload.resume_id)
+        profile = (parsed or {}).get("profile") if isinstance(parsed, dict) else None
+        if profile is not None:
+            request_payload["candidate_profile"] = profile
+            request_payload["parsed_profile"] = profile
+
+    # If target_role was omitted by the caller, infer one from the active resume profile.
+    if "target_role" not in payload.model_fields_set and isinstance(profile, dict):
+        inferred_role = _infer_target_role_from_profile(profile)
+        if inferred_role:
+            request_payload["target_role"] = inferred_role
+
+    normalized_payload = QuestionGenerationRequest.model_validate(request_payload)
+    return question_engine.generate(normalized_payload)
 
 
 @router.get("/interviews/questions/framework", response_model=QuestionFrameworkMetadata)
@@ -187,13 +204,25 @@ def get_question_framework() -> QuestionFrameworkMetadata:
 
 @router.post("/interviews/evaluate", response_model=AnswerEvaluationResponse)
 def evaluate_interview_answer(payload: AnswerEvaluationRequest) -> AnswerEvaluationResponse:
-    evaluation = evaluation_engine.evaluate(payload)
+    request_payload = payload.model_dump(mode="python")
+
+    # Prevent unrelated default role leakage in saved evaluations.
+    if "target_role" not in payload.model_fields_set and payload.resume_id is not None:
+        parsed = repository.get_parsed_resume(payload.resume_id)
+        profile = (parsed or {}).get("profile") if isinstance(parsed, dict) else None
+        if isinstance(profile, dict):
+            inferred_role = _infer_target_role_from_profile(profile)
+            if inferred_role:
+                request_payload["target_role"] = inferred_role
+
+    normalized_payload = AnswerEvaluationRequest.model_validate(request_payload)
+    evaluation = evaluation_engine.evaluate(normalized_payload)
 
     evaluation_id = repository.save_answer_evaluation(
-        resume_id=payload.resume_id,
-        session_id=payload.session_id,
-        question_id=payload.question_id,
-        request_payload=payload.model_dump(mode="json"),
+        resume_id=normalized_payload.resume_id,
+        session_id=normalized_payload.session_id,
+        question_id=normalized_payload.question_id,
+        request_payload=normalized_payload.model_dump(mode="json"),
         response_payload=evaluation.model_dump(mode="json"),
     )
     evaluation.evaluation_id = str(evaluation_id)
@@ -362,11 +391,13 @@ def get_results_dashboard(
 
     study_plan = _build_study_plan(weak_areas)
 
-    target_role = "Backend Engineer"
+    target_role = _infer_target_role_from_profile(profile)
     if evaluations:
         latest_response = evaluations[0].get("response") or {}
         latest_request = evaluations[0].get("request") or {}
         target_role = str(latest_response.get("target_role") or latest_request.get("target_role") or target_role)
+    if not target_role:
+        target_role = "Software Engineer"
 
     return DashboardResponse(
         resume_id=resume_id,
@@ -399,6 +430,44 @@ def _severity_from_score(score_100: float) -> str:
     if score_100 < 60.0:
         return "high"
     return "moderate"
+
+
+def _infer_target_role_from_profile(profile: dict[str, Any]) -> str:
+    headline = str(profile.get("headline") or "").strip()
+    if headline and len(headline) <= 80:
+        return headline
+
+    experience = profile.get("experience") or []
+    for item in experience:
+        if not isinstance(item, dict):
+            continue
+        title = str(item.get("title") or "").strip()
+        if title:
+            return title
+
+    projects = profile.get("projects") or []
+    for item in projects:
+        if not isinstance(item, dict):
+            continue
+        role = str(item.get("role") or "").strip()
+        if role:
+            return role
+
+    skills = profile.get("skills") or []
+    lowered_skills = {
+        str(item.get("canonical") or item.get("raw") or "").strip().lower()
+        for item in skills
+        if isinstance(item, dict)
+    }
+
+    if {"react", "typescript", "javascript"} & lowered_skills:
+        return "Frontend Engineer"
+    if {"python", "fastapi", "django", "postgresql", "redis"} & lowered_skills:
+        return "Backend Engineer"
+    if {"aws", "kubernetes", "docker"} & lowered_skills:
+        return "Platform Engineer"
+
+    return ""
 
 
 def _build_skill_radar(*, profile: dict[str, Any], topic_scores: dict[str, list[float]]) -> DashboardRadarData:

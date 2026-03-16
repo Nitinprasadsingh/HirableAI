@@ -18,6 +18,8 @@ const feedbackBox = byId("feedbackBox");
 const runtime = {
   resumeId: "",
   sessionId: "",
+  targetRole: "Software Engineer",
+  focusTopics: [],
   questions: [],
   index: 0,
   answers: [],
@@ -50,6 +52,9 @@ async function startInterview() {
     setStatus(interviewStatus, "Parsed resume not found. Using fallback starter questions.", "warning");
   }
 
+  runtime.targetRole = inferTargetRole(parsed);
+  runtime.focusTopics = inferFocusTopics(parsed);
+
   runtime.questions = await buildQuestionsWithApiFallback(parsed);
   runtime.index = 0;
   runtime.answers = [];
@@ -67,7 +72,13 @@ async function buildQuestionsWithApiFallback(parsed) {
       resume_id: runtime.resumeId,
       question_count: 6,
       parsed_profile: parsed?.profile || null,
+      target_role: runtime.targetRole,
+      focus_topics: runtime.focusTopics,
     });
+
+    if (typeof response?.target_role === "string" && response.target_role.trim()) {
+      runtime.targetRole = response.target_role.trim();
+    }
 
     const questions = normalizeQuestions(response);
     if (questions.length) {
@@ -237,6 +248,7 @@ async function evaluateAnswerWithFallback(current, answer, skipped) {
       question_id: `Q${String(runtime.index + 1).padStart(2, "0")}`,
       question: current.prompt,
       topic: current.topic,
+      target_role: runtime.targetRole,
       answer,
       skipped,
     });
@@ -256,6 +268,40 @@ async function evaluateAnswerWithFallback(current, answer, skipped) {
   }
 
   return analyzeAnswer(answer, current.topic, skipped);
+}
+
+function inferTargetRole(parsed) {
+  const profile = parsed?.profile || {};
+  const headline = String(profile.headline || "").trim();
+  if (headline && headline.length <= 80) return headline;
+
+  const firstExperienceTitle = String(profile.experience?.[0]?.title || "").trim();
+  if (firstExperienceTitle) return firstExperienceTitle;
+
+  const firstProjectRole = String(profile.projects?.[0]?.role || "").trim();
+  if (firstProjectRole) return firstProjectRole;
+
+  return "Software Engineer";
+}
+
+function inferFocusTopics(parsed) {
+  const profile = parsed?.profile || {};
+  const topics = [];
+
+  (profile.skills || []).slice(0, 6).forEach((item) => {
+    const topic = item?.canonical || item?.raw;
+    if (topic && !topics.includes(topic)) {
+      topics.push(topic);
+    }
+  });
+
+  (profile.projects || []).slice(0, 2).forEach((item) => {
+    if (item?.name && !topics.includes(item.name)) {
+      topics.push(item.name);
+    }
+  });
+
+  return topics;
 }
 
 function createSessionId() {

@@ -177,6 +177,7 @@ class QuestionObject(BaseModel):
 
 
 class QuestionGenerationRequest(BaseModel):
+    resume_id: UUID | None = None
     candidate_profile: dict[str, Any] | None = None
     parsed_profile: dict[str, Any] | None = None
     target_role: str = "Backend Engineer"
